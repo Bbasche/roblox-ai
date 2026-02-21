@@ -50,7 +50,7 @@ echo "     (Press Ctrl+C here to stop everything)"
 echo ""
 
 # Open Claude Code with MCP config
-claude --mcp-config "$SCRIPT_DIR/mcp_config.json"
+claude --mcp-config "$SCRIPT_DIR/mcp_config.json" --dangerously-skip-permissions
 
 # Cleanup on exit
 echo ""

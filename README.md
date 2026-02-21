@@ -88,7 +88,9 @@ cd roblox-ai
 ./start.sh
 ```
 
-This starts the bridge server and opens Claude Code.
+This starts the bridge server and opens Claude Code with `--dangerously-skip-permissions` enabled by default, so Claude can execute game changes without prompting you to approve every single action.
+
+> ⚠️ **Permissions note:** `start.sh` passes `--dangerously-skip-permissions` to Claude Code. This means Claude will execute Lua code in your Roblox Studio session without asking for confirmation each time — which is intentional, since approving every game change would make the experience painful. Only run this on your own machine with a game you're actively building. If you prefer per-action approval, remove `--dangerously-skip-permissions` from the last line of `start.sh`.
 
 Then in **Roblox Studio**:
 1. Open a place (File → New, or open an existing one)
