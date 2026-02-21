@@ -4,8 +4,10 @@ Roblox AI MCP Server
 Exposes tools to Claude Code so it can control Roblox Studio in real time.
 """
 
+import base64
 import httpx
-from mcp.server.fastmcp import FastMCP
+from pathlib import Path
+from mcp.server.fastmcp import FastMCP, Image
 
 BRIDGE_URL = "http://localhost:8765"
 
@@ -143,6 +145,59 @@ end
 return "Cleared workspace — removed " .. count .. " objects and all scripts"
 """
     return _fmt(await _call_bridge(lua, "clear_workspace"))
+
+
+@mcp.tool()
+def load_reference_image(path: str) -> Image:
+    """
+    Load an image file so Claude can SEE it for creative direction.
+
+    Use this when the user wants to share:
+    - Character designs or reference art
+    - Screenshots of games they want to recreate
+    - Sketches of level layouts
+    - Color palettes or mood boards
+    - Any visual inspiration for their game
+
+    After seeing the image, describe what you notice and translate it into
+    Roblox Studio actions — colors, shapes, atmosphere, style, layout.
+
+    Args:
+        path: Absolute or relative path to the image file.
+              Supports: .png, .jpg, .jpeg, .gif, .webp
+              Tip: drag the image into the roblox-ai folder first, then just
+              pass the filename (e.g. "my_character.png").
+
+    Returns:
+        The image, visible to Claude for analysis.
+
+    Example usage:
+        User: "Here's my character design" [pastes path or filename]
+        → call load_reference_image("character.png")
+        → describe what you see
+        → translate colors/shapes into Roblox parts via execute_lua
+    """
+    p = Path(path).expanduser()
+    if not p.is_absolute():
+        # Resolve relative to the mcp_server.py directory
+        p = Path(__file__).parent / path
+
+    if not p.exists():
+        raise FileNotFoundError(
+            f"Image not found: {p}\n"
+            f"Tip: place your image in the roblox-ai folder, then use just the filename."
+        )
+
+    MIME_MAP = {
+        ".png": "image/png",
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".gif": "image/gif",
+        ".webp": "image/webp",
+    }
+    mime = MIME_MAP.get(p.suffix.lower(), "image/png")
+    data = base64.b64encode(p.read_bytes()).decode()
+    return Image(data=data, format=mime)
 
 
 if __name__ == "__main__":

@@ -125,6 +125,29 @@ Claude:  [adds 8 spinning gold coins + a launch pad with a script]
 
 ---
 
+## Sharing images for creative direction
+
+You can give Claude visual references — character art, screenshots of games you love, level sketches, color palettes — and it will translate them into your Roblox game.
+
+**How to use it:**
+
+1. Drop the image file into the `roblox-ai/` folder (or anywhere on your computer)
+2. Tell Claude: `"Load my reference image: character.png"` (or paste the full path)
+3. Claude calls `load_reference_image` and can now **see** the image
+4. It describes what it sees and immediately builds it in Studio
+
+```
+You:     Load my image: hero_design.png
+Claude:  I can see a character with dark armor, glowing blue accents, and a cape.
+         Let me build this as a Roblox model — dark grey parts for the body,
+         Neon cyan for the accents, and a trailing part for the cape effect...
+         [builds it live in Studio]
+```
+
+Supported formats: `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`
+
+---
+
 ## Supported game types
 
 Claude knows how to build (and will guide you through):
